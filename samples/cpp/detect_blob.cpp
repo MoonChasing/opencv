@@ -10,12 +10,13 @@ using namespace std;
 using namespace cv;
 
 
-static void help()
+static void help(char** argv)
 {
     cout << "\n This program demonstrates how to use BLOB to detect and filter region \n"
-        "Usage: \n"
-        "  ./detect_blob <image1(detect_blob.png as default)>\n"
-        "Press a key when image window is active to change descriptor";
+         << "Usage: \n"
+         << argv[0]
+         << " <image1(detect_blob.png as default)>\n"
+         << "Press a key when image window is active to change descriptor";
 }
 
 
@@ -74,7 +75,7 @@ int main(int argc, char *argv[])
     cv::CommandLineParser parser(argc, argv, "{@input |detect_blob.png| }{h help | | }");
     if (parser.has("h"))
     {
-        help();
+        help(argv);
         return 0;
     }
     fileName = parser.get<string>("@input");
@@ -120,12 +121,12 @@ int main(int argc, char *argv[])
         uchar c3 = (uchar)rand();
         palette.push_back(Vec3b(c1, c2, c3));
     }
-    help();
+    help(argv);
 
 
     // These descriptors are going to be detecting and computing BLOBS with 6 different params
     // Param for first BLOB detector we want all
-    typeDesc.push_back("BLOB");    // see http://docs.opencv.org/3.4/d0/d7a/classcv_1_1SimpleBlobDetector.html
+    typeDesc.push_back("BLOB");    // see http://docs.opencv.org/master/d0/d7a/classcv_1_1SimpleBlobDetector.html
     pBLOB.push_back(pDefaultBLOB);
     pBLOB.back().filterByArea = true;
     pBLOB.back().minArea = 1;
@@ -180,7 +181,7 @@ int main(int argc, char *argv[])
             vector<Rect>  zone;
             vector<vector <Point> >  region;
             Mat     desc, result(img.rows, img.cols, CV_8UC3);
-            if (b.dynamicCast<SimpleBlobDetector>() != NULL)
+            if (b.dynamicCast<SimpleBlobDetector>().get())
             {
                 Ptr<SimpleBlobDetector> sbd = b.dynamicCast<SimpleBlobDetector>();
                 sbd->detect(img, keyImg, Mat());
